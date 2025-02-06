@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battery Status</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Background Video -->
+    <div class="video-container">
+        <video autoplay muted loop class="background-video">
+            <source src="{{ url_for('static', filename='battery_background.mp4') }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <!-- Battery Status Section -->
+    <div class="battery-status-container">
+        <h1>Battery Status</h1>
+
+        <!-- Charge Used Bar -->
+        <div class="charge-bar used">
+            <p>Charge Used: <span id="used-percentage">{{ used_percentage }}%</span></p>
+            <div class="charge-bar-fill" id="used-fill" style="width: {{ used_percentage }}%;"></div>
+        </div>
+
+        <!-- Remaining Charge Bar -->
+        <div class="charge-bar remaining">
+            <p>Remaining Charge: <span id="remaining-percentage">{{ remaining_percentage }}%</span></p>
+            <div class="charge-bar-fill" id="remaining-fill" style="width: {{ remaining_percentage }}%;"></div>
+        </div>
+
+        <!-- Battery Analysis -->
+        <p id="battery-analysis">Battery will last for approximately {{ hours_left }} more hours.</p>
+
+        <!-- Back Button -->
+        <a href="{{ url_for('start_operation') }}" class="back-btn">Back to Start</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Ocean Bot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Background Image -->
+    <div class="background-container">
+        <img src="{{ url_for('static', filename='about_background.jpg') }}" alt="Ocean Background" class="background-image">
+    </div>
+
+    <!-- About Us Container -->
+    <div class="about-container">
+        <!-- Welcome Sentence in White -->
+        <h1 class="welcome-text">Welcome to Ocean-RoombAI</h1>
+
+        <!-- Scrollable Content -->
+        <div class="scrollable-content">
+            <p class="main-content">
+                Ocean Bot is an innovative solution designed to help clean the ocean and remove debris effectively.
+                Our underwater bot is engineered to operate autonomously and target specific waste materials such as
+                plastic, metal, and glass. By utilizing advanced AI technology, Ocean Bot can efficiently navigate
+                through marine environments, reducing pollution and helping maintain a healthy ecosystem. <br><br>
+
+                The project focuses on solving the critical issue of ocean waste management through automation and
+                intelligent systems. With sensors, machine learning algorithms, and GIS tracking, Ocean Bot ensures
+                precision and sustainability. Our goal is to make a significant impact on the ocean's cleanliness
+                and promote environmental conservation.<br><br>
+
+                The future of our oceans depends on the actions we take today. With Ocean Bot, we aim to create a
+                cleaner, safer habitat for marine life while reducing the footprint of human waste in our waters.
+                Join us in making a difference by supporting the development of technologies that protect our planet.<br><br>
+
+                At Ocean Bot, we believe in combining innovation with responsibility. Our team is committed to
+                continuously improving the bot's efficiency, making it adaptable to various environmental challenges.
+            </p>
+        </div>
+
+        <!-- Buttons at the Bottom -->
+        <div class="buttons-container">
+            <button onclick="location.href='/start'" class="btn">Start Operation</button>
+            <button onclick="location.href='/guidance'" class="btn">Guidance</button>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bot Depth Analysis</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #0a2740; /* Submarine dark theme */
+            color: #ffffff;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* Responsive layout for the depth info boxes */
+        .depth-info {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 20px;
+        }
+
+        .depth-box {
+            padding: 15px;
+            background-color: #1a4566;
+            border-radius: 8px;
+            width: 200px;
+            font-size: 24px;
+        }
+
+        .depth-box h3 {
+            margin: 10px 0;
+        }
+
+        /* Chart and graph container */
+        .gauge-container, #depth-graph-container {
+            margin: 30px auto;
+            width: 90%; /* Make sure the content fits the screen */
+            max-width: 600px; /* Limit the width on large screens */
+        }
+
+        canvas {
+            width: 100% !important; /* Ensure canvas elements take up available space */
+            height: auto !important; /* Auto scale the height to maintain aspect ratio */
+        }
+
+        /* Ensure chart and gauge containers are well-spaced */
+        #depth-graph-container {
+            margin-top: 30px;
+        }
+
+        /* Responsive font adjustments */
+        @media screen and (max-width: 768px) {
+            .depth-box {
+                font-size: 18px;
+                width: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Bot Depth Analysis</h1>
+
+    <!-- Real-time depth information -->
+    <div class="depth-info">
+        <div class="depth-box">
+            <h3>Current Depth</h3>
+            <span id="current-depth">Loading...</span> m
+        </div>
+        <div class="depth-box">
+            <h3>Max Depth</h3>
+            <span id="max-depth">Loading...</span> m
+        </div>
+        <div class="depth-box">
+            <h3>Average Depth</h3>
+            <span id="avg-depth">Loading...</span> m
+        </div>
+    </div>
+
+    <!-- Gauge for real-time depth -->
+    <div class="gauge-container">
+        <canvas id="gauge-chart"></canvas>
+    </div>
+
+    <!-- Line graph for depth readings -->
+    <div id="depth-graph-container">
+        <canvas id="depth-chart"></canvas>
+    </div>
+
+    <script>
+        let ctxGauge = document.getElementById('gauge-chart').getContext('2d');
+        let gaugeChart = new Chart(ctxGauge, {
+            type: 'doughnut',
+            data: {
+                labels: ['Depth'],
+                datasets: [{
+                    data: [0, 100],
+                    backgroundColor: ['#00c3ff', '#0a2740'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                rotation: Math.PI,
+                circumference: Math.PI,
+                cutout: '80%',
+                responsive: true,
+                plugins: {
+                    tooltip: { enabled: false }
+                }
+            }
+        });
+
+        let ctx = document.getElementById('depth-chart').getContext('2d');
+        let depthChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Depth (m)',
+                    data: [],
+                    backgroundColor: 'rgba(0, 195, 255, 0.2)',
+                    borderColor: '#00c3ff',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Time (s)',
+                            color: '#ffffff'
+                        },
+                        ticks: { color: '#ffffff' }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Depth (m)',
+                            color: '#ffffff'
+                        },
+                        ticks: { color: '#ffffff' }
+                    }
+                },
+                plugins: {
+                    legend: { labels: { color: '#ffffff' } }
+                }
+            }
+        });
+
+        function updateDepthData() {
+            fetch('/get_depth_data')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('current-depth').textContent = data.current_depth.toFixed(2);
+                    document.getElementById('max-depth').textContent = data.max_depth.toFixed(2);
+                    document.getElementById('avg-depth').textContent = data.avg_depth.toFixed(2);
+
+                    gaugeChart.data.datasets[0].data[0] = data.current_depth;
+                    gaugeChart.update();
+
+                    let timeLabel = new Date().toLocaleTimeString();
+                    depthChart.data.labels.push(timeLabel);
+                    depthChart.data.datasets[0].data.push(data.current_depth);
+                    depthChart.update();
+                });
+        }
+
+        setInterval(updateDepthData, 2000);
+    </script>
+</body>
+</html>

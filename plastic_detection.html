@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Start Plastic Collection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="plastic-detection-page">
+        <h1>Start Plastic Collection Operation</h1>
+
+        <!-- Button to start the plastic collection process -->
+        <button id="start-collection">Start Collection</button>
+
+        <!-- Display detection result -->
+        <div id="result"></div>
+    </div>
+
+    <!-- Include JavaScript file -->
+    <script src="{{ url_for('static', filename='plastic_detection.js') }}"></script>
+
+    <script>
+        document.getElementById('start-collection').addEventListener('click', function() {
+            // Send a request to start the plastic detection process
+            fetch('/start-plastic-collection', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display the result in the result div
+                document.getElementById('result').innerHTML = data.message;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>

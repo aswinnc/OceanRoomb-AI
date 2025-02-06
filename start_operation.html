@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Start Operation - Ocean Bot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Background Video -->
+    <div class="video-container">
+        <video autoplay muted loop class="background-video">
+            <source src="{{ url_for('static', filename='start_background.mp4') }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <!-- Slider Container -->
+    <div class="slider-container">
+        <!-- Battery Status -->
+        <div class="slider-box" id="battery-status">
+            <h3>Battery Status</h3>
+            <p>Check the current battery level of the ocean bot for optimal performance.</p>
+            <a href="{{ url_for('battery_status') }}" class="button">View Status</a>
+        </div>
+
+        <!-- Location -->
+        <div class="slider-box" id="location">
+            <h3>Location</h3>
+            <p>Track the current location of the bot using GIS coordinates.</p>
+            <a href="{{ url_for('marine_map') }}" class="button">View Location</a>
+        </div>
+
+        <!-- Depth -->
+        <div class="slider-box" id="depth">
+            <h3>Depth</h3>
+            <p>Monitor the bot's current depth in the ocean with real-time data.</p>
+            <a href="{{ url_for('depth_analysis') }}" class="button">View Depth</a>
+        </div>
+
+        <!-- Previous Data -->
+        <div class="slider-box" id="previous-data">
+            <h3>Previous Data</h3>
+            <p>Review past operational data, including depth and plastic collected.</p>
+            <a href="{{ url_for('previous_data') }}" class="button">View Data</a>
+        </div>
+
+        <!-- Collect Plastic -->
+        <div class="slider-box" id="collect-plastic">
+            <h3>Collect Plastic</h3>
+            <p>Initiate the plastic collection process and view the progress in real-time.</p>
+            <a href="{{ url_for('start_collection') }}" class="button">Start Collection</a>
+        </div>
+
+        <!-- Collect Metal -->
+        <div class="slider-box" id="collect-metal">
+            <h3>Collect Metal</h3>
+            <p>Start the metal collection process and monitor progress in real-time.</p>
+            <a href="{{ url_for('collection_process') }}" class="button">Start Collection</a>
+        </div>
+
+        <!-- Next Button -->
+        <button class="next-button" onclick="nextBox()">Next</button>
+    </div>
+
+    <!-- Link to JavaScript file -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        window.onload = function() {
+            let currentBoxIndex = 0;
+            const boxes = document.querySelectorAll('.slider-box');
+
+            // Hide all boxes except the first one initially
+            boxes.forEach((box, index) => {
+                if (index !== 0) box.style.display = 'none';
+            });
+
+            // Function to show the next box
+            window.nextBox = function() {
+                boxes[currentBoxIndex].style.display = 'none'; // Hide current box
+                currentBoxIndex = (currentBoxIndex + 1) % boxes.length; // Move to the next box
+                boxes[currentBoxIndex].style.display = 'block'; // Show next box
+            };
+
+            // Function to handle plastic collection process
+            window.performPlasticCollection = function() {
+                const confirmStart = confirm("Do you want to start the plastic collection process?");
+                if (confirmStart) {
+                    window.location.href = "{{ url_for('start_collection') }}";
+                }
+            };
+
+            // Function to handle metal collection process
+            window.performMetalCollection = function() {
+                const confirmStart = confirm("Do you want to start the metal collection process?");
+                if (confirmStart) {
+                    window.location.href = "{{ url_for('start_collection') }}";
+                }
+            };
+        }
+    </script>
+</body>
+</html>

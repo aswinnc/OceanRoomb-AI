@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bot Real-Time Location Tracker</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 1.8rem;
+            color: #00796b;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        #map {
+            height: 60vh;
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            margin: 20px 0;
+        }
+
+        #info {
+            width: 90%;
+            max-width: 900px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        #info p {
+            margin: 10px 0;
+            font-size: 1.2rem;
+            color: #004d40;
+            font-weight: 500;
+            flex: 1;
+            text-align: center;
+        }
+
+        #info span {
+            font-weight: bold;
+            color: #00796b;
+        }
+
+        #measurement-box {
+            width: 90%;
+            max-width: 900px;
+            padding: 15px;
+            background-color: #e0f7fa;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.2rem;
+            color: #004d40;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .measurement-item {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #00796b;
+        }
+
+        .leaflet-container {
+            transition: all 0.5s ease;
+        }
+
+        .action-btn {
+            background-color: #00796b;
+            color: #ffffff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .action-btn:hover {
+            background-color: #004d40;
+        }
+
+        @media (max-width: 768px) {
+            #info p {
+                font-size: 1rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            .action-btn {
+                font-size: 0.9rem;
+                padding: 10px 20px;
+            }
+
+            #measurement-box {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Real-Time Bot Location Tracker</h2>
+
+    <!-- Map Section -->
+    <div id="map"></div>
+
+    <!-- Info Section -->
+    <div id="info">
+        <p>Latitude: <span id="latitude">Loading...</span></p>
+        <p>Longitude: <span id="longitude">Loading...</span></p>
+        <p>Direction: <span id="direction">Loading...</span></p>
+    </div>
+
+    <!-- Measurement Box Section -->
+    <div id="measurement-box">
+        <div class="measurement-item">Distance: <span id="distance">0 km</span></div>
+        <div class="measurement-item">Speed: <span id="speed">0 km/h</span></div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        // Initialize the map centered in the Indian Ocean
+        var map = L.map('map').setView([10.00, 72.00], 5);
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+
+        // Marker for the bot's location
+        var botMarker = L.marker([10.00, 72.00]).addTo(map).bindPopup("Bot Location");
+
+        // Marker for the Indian Ocean location
+        var indianOceanMarker = L.marker([-20.0, 80.0]).addTo(map)
+            .bindPopup("<b>Indian Ocean</b>").openPopup(); // Custom marker for Indian Ocean
+
+        // Function to update the bot's location in real-time
+        function fetchBotLocation() {
+            fetch('/get_location')
+                .then(response => response.json())
+                .then(data => {
+                    // Update marker position on the map
+                    var newLat = data.latitude;
+                    var newLng = data.longitude;
+                    var newDirection = data.direction;
+
+                    botMarker.setLatLng([newLat, newLng]);
+
+                    // Update map view to focus on the new location
+                    map.setView([newLat, newLng], 5);
+
+                    // Update the displayed latitude, longitude, and direction
+                    document.getElementById('latitude').textContent = newLat.toFixed(4);
+                    document.getElementById('longitude').textContent = newLng.toFixed(4);
+                    document.getElementById('direction').textContent = newDirection;
+
+                    // Calculate and update the distance and speed
+                    var distance = calculateDistance(newLat, newLng);
+                    var speed = calculateSpeed(distance);
+                    document.getElementById('distance').textContent = distance.toFixed(2) + " km";
+                    document.getElementById('speed').textContent = speed.toFixed(2) + " km/h";
+                });
+        }
+
+        // Function to calculate distance (dummy function for now)
+        function calculateDistance(lat, lng) {
+            return Math.random() * 100; // Random value for demonstration purposes
+        }
+
+        // Function to calculate speed (dummy function for now)
+        function calculateSpeed(distance) {
+            return distance / 2; // Random value for demonstration purposes
+        }
+
+        // Fetch and update the bot's location every 2 seconds
+        setInterval(fetchBotLocation, 2000);
+    </script>
+
+</body>
+</html>

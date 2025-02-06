@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guidance</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='guide.css') }}">
+</head>
+<body>
+    <div class="guidance-container">
+        <h1>Step-by-Step Instructions</h1>
+
+           <p>
+                1. Initial Setup: Before operating the Ocean Bot, ensure it is properly charged. You can check the battery status by navigating to the "Battery Status" section on the Start Operation page.
+            </p>
+            <p>
+                2. Launching the Bot: After confirming that the bot is fully charged, place the bot in the water and press the "Start Operation" button. The bot will automatically begin tracking its location and depth.
+            </p>
+            <p>
+                3. Monitoring Depth: To monitor the depth, go to the "Depth Analysis" section, where you can view real-time data about how deep the bot is. The maximum depth the bot can handle is 50 meters.
+            </p>
+            <p>
+                4. Starting Plastic Collection: Press the "Start Collection" button to initiate the plastic collection process. The bot will use its sensors to detect and collect plastic waste. You can monitor this process live using the webcam feed.
+            </p>
+            <p>
+                5. Reviewing Data: After the operation, navigate to the "Previous Data" section to review detailed logs of the bot's performance, including the depth it reached and the amount of plastic collected.
+            </p>
+
+
+        <div class="video-slider">
+            <!-- Each video will be placed inside a div for horizontal scrolling -->
+            <div class="video-item">
+                <video controls>
+                    <source src="{{ url_for('static', filename='video1.mp4') }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <div class="video-item">
+                <video controls>
+                    <source src="{{ url_for('static', filename='video2.mp4') }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <div class="video-item">
+                <video controls>
+                    <source src="{{ url_for('static', filename='video3.mp4') }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
